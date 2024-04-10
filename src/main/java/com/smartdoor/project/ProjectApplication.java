@@ -11,10 +11,20 @@ import com.smartdoor.services.CentralManagementSystem;
 public class ProjectApplication {
 
 	public static void main(final String[] args) throws IOException{
-		
-		final CentralManagementSystem centralManagementSystem = new CentralManagementSystem();
 
 		SpringApplication.run(ProjectApplication.class, args);
+
+		// Start each sensor. Extend Sensor to Thread
+
+		String fingerPrintFeatureset = "1001010";
+
+	 	String faceRecognitionFeatureset = "1010101";
+
+	 	String rfidScan = "1010011";
+
+		final CentralManagementSystem centralManagementSystem = new CentralManagementSystem(fingerPrintFeatureset, faceRecognitionFeatureset, rfidScan);
+		centralManagementSystem.start();
+
 	}
 
 }
