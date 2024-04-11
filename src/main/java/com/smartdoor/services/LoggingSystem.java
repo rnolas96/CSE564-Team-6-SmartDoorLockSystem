@@ -7,11 +7,11 @@ import com.smartdoor.models.Notification;
 public class LoggingSystem {
     public Log logged_data;
 
-    public void log_error_data(String  type, String logged_data, File logFile, Notification notification) {
+    public void log_error_data(String  type, String logged_data) {
 
     }
 
-    public void log_data(String type, String  loggedData, File  logFile) {
+    public void log_data(String type, String  loggedData) {
 
     }
 }
