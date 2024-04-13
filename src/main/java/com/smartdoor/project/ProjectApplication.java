@@ -24,20 +24,17 @@ public class ProjectApplication {
 
 	 	String rfidScan = "1010011";
 
-
-
+		// testing the fingerprint scanner with hardcoded input
 		FingerprintScanner fp = new FingerprintScanner();
 		Fingerprint scan = new Fingerprint();
 		scan.value=  "fingerPrintUser1";
-		System.out.println("response ===="+fp.biometricProcessor(false, scan, 1));
+		System.out.println("response "+fp.biometricProcessor(false, scan, 1));
 
-
+		// testing the rfid scanner with hardcoded input
 		RFIDScanner rfid = new RFIDScanner();
-
 		Barcode rfidscan = new Barcode();
 		rfidscan.value = "RFIDUser1";
-		System.out.println("response ===="+rfid.RFIDProcessor(false, rfidscan, 1));
-
+		System.out.println("response "+rfid.RFIDProcessor(false, rfidscan, 1));
 
 		final CentralManagementSystem centralManagementSystem = new CentralManagementSystem(fingerPrintFeatureset, faceRecognitionFeatureset, rfidScan);
 		centralManagementSystem.start();
