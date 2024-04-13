@@ -1,10 +1,13 @@
 package com.smartdoor.services.sensors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartdoor.exceptions.UnauthorizedException;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Fingerprint;
 import com.smartdoor.models.Notification;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +25,7 @@ public class FingerprintScanner {
 
 	private FeatureSet finalScan;
 
-	Map<String, String> featureSetMap = new HashMap<>();
+	String filePath = "src/main/java/com/smartdoor/Data/FingerPrintFeatureSetMap.json";
 
 	private boolean checkCaptured(boolean captured) {
 		if(captured){
@@ -33,25 +36,39 @@ public class FingerprintScanner {
 		}
 	}
 
-	private FeatureSet getFeatureSet(Fingerprint scan) {
-		String Scanned = featureSetMap.get(scan.name);
-		return scanned;
+	private FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
+
+
+		// Read the JSON file
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode rootNode = objectMapper.readTree(new File(filePath));
+
+		JsonNode fingerprint = rootNode.get(scan.value);
+
+		if (fingerprint != null) {
+			String fingerprintValue = fingerprint.get("value").asText();
+			System.out.println("fingerPrint"+ fingerprintValue);
+
+			FeatureSet featureSet = new FeatureSet();
+			featureSet.value = fingerprintValue;
+
+			return featureSet;
+		}
+		else{
+
+			throw new Exception("fingerprint data not found");
+		}
+
 	}
 
-	public FeatureSet outFeatureSet(FeatureSet scanned, FeatureSet finalScan) {
-		return null;
-	}
-
-	public FeatureSet biometricProcessor(boolean captured, FeatureSet scanned, Notification notification, Fingerprint scan, int c_id) {
+	public FeatureSet biometricProcessor(boolean captured, Fingerprint scan, int c_id) throws Exception {
 		while(!captured){
 			try {
 				scanned = getFeatureSet(scan);
 				captured = true;
 			}
-			catch (UnauthorizedException ex){
-				if(ex.getStatusCode()==401){
-					//send Notification
-				}
+			catch (Exception ex){
+				throw new Exception("error occurred while getting featureset" +  ex.getMessage());
 
 			}
 		}
