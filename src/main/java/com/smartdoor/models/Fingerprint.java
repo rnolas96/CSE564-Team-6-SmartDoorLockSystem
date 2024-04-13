@@ -1,5 +1,5 @@
 package com.smartdoor.models;
 
 public class Fingerprint {
-    public String name;
+    public String value;
 }
