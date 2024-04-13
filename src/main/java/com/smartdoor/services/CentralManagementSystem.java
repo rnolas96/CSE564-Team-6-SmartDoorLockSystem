@@ -25,7 +25,7 @@ public class CentralManagementSystem extends Thread {
 
 	private String rfidScan;
 
-	private ArrayList<Boolean> configInput = new ArrayList<Boolean>() {{
+	private ArrayList<Boolean> config = new ArrayList<Boolean>() {{
 		add(true);
 		add(true);
 		add(true);
@@ -57,11 +57,22 @@ public class CentralManagementSystem extends Thread {
                 System.out.println("Admin Controls: ");
 				System.out.println("Enter user management option(Type No to skip): ");
 				String optionInput = scanner.nextLine();
+				
+				if(!optionInput.equals("No")) {
+					this.option = optionInput;
 
-				if(!optionInput.equals("No") && optionInput.equals("delete")) {
-					System.out.println("Enter user id to delete");
-					String userId = scanner.nextLine();
-					this.userId = UUID.fromString(userId);
+					if(optionInput.equals("delete") || optionInput.equals("update")) {
+						System.out.println("Enter user id to update/delete");
+						String userId = scanner.nextLine();
+						try {
+							this.userId = UUID.fromString(userId);
+						} catch (Exception e) {
+							System.out.println("Invalid UUID entered");
+						}
+					}
+					else {
+						this.userId = UUID.randomUUID();
+					}
 				}
 				System.out.println("Enter config(Type No to skip)");
                 String configInput = scanner.nextLine();
@@ -69,9 +80,9 @@ public class CentralManagementSystem extends Thread {
 				if(!configInput.equals("No")) {
 					String cleanInput = configInput.replaceAll("[{}\\s]", "");
 					String[] booleanStrings = cleanInput.split(",");
-					this.configInput = new ArrayList<>();
+					this.config = new ArrayList<>();
 					for (String boolStr : booleanStrings) {
-						this.configInput.add(Boolean.parseBoolean(boolStr.trim()));
+						this.config.add(Boolean.parseBoolean(boolStr.trim()));
 					}
 				}	
 
@@ -85,15 +96,19 @@ public class CentralManagementSystem extends Thread {
     }
 
 	private void centralProcessing() {
-		AdminControlSystemOutput config = new AdminControlSystemOutput();
-		config = adminControlSystem.adminControlProcessing(this.fingerPrintFeatureset, this.faceRecognitionFeatureset, this.rfidScan, this.accessState, this.userId, this.configInput, this.option);		
-		this.accessState = config.accessState;
-		
-		if(this.option == null) {
-			this.accessState = combinedVerificationSystem.combinedVerificationProcessing(this.fingerPrintFeatureset, this.faceRecognitionFeatureset, this.rfidScan, config.config);
+
+		if(this.option != null) {
+			System.out.println("comes here to admin case");
+			AdminControlSystemOutput acsOutput = new AdminControlSystemOutput();
+			acsOutput = adminControlSystem.adminControlProcessing(this.fingerPrintFeatureset, this.faceRecognitionFeatureset, this.rfidScan, this.accessState, this.userId, this.config, this.option);		
+			this.accessState = acsOutput.accessState;
+			System.out.println("accessState - " + acsOutput.accessState);
+		}
+		else {
+			System.out.println("comes here to cvs case");
+			this.accessState = combinedVerificationSystem.combinedVerificationProcessing(this.fingerPrintFeatureset, this.faceRecognitionFeatureset, this.rfidScan, this.config);
 		}
 		
-		System.out.println("accessState - " + config.accessState);
 	}
 
 }

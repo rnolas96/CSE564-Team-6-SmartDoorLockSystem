@@ -16,7 +16,7 @@ public class ProjectApplication {
 
 		// Start each sensor. Extend Sensor to Thread
 
-		String fingerPrintFeatureset = "1001010";
+		String fingerPrintFeatureset = "1001011";
 
 	 	String faceRecognitionFeatureset = "1010101";
 

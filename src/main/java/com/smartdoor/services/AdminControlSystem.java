@@ -27,7 +27,7 @@ public class AdminControlSystem {
 
 	private String option;
 
-	private User user;
+	private User user = new User();
 
 	private UUID user_id;
 
@@ -37,36 +37,53 @@ public class AdminControlSystem {
 
 	private Notification notification;
 
-	public void setConfig(ArrayList<Boolean> configState) {
+	private void setUserId(UUID user_id) {
+		this.user_id = user_id;
+	}
+
+	private void setOption(String option) {
+		this.option = option;
+	}
+
+	private void setConfig(ArrayList<Boolean> configState) {
 		this.configState = configState;
 	}
 
 	private void setIsRFID(String rfidScan) {
+		System.out.println("setting RFID");
 		this.isRFID = dataService.match(rfidScan, "rfid_scan");
 	}
 
 	private void setIsFingerPrint(String fingerPrintFeatureSet) {
+		System.out.println("setting fingerprint");
 		this.isFingerPrint = dataService.match(fingerPrintFeatureSet, "fingerprint_scan");
 	}
 
 	private void setIsFaceRecognition(String faceRecognitionFeatureSet) {
+		System.out.println("setting face recognition");
 		this.isFaceRecognition = dataService.match(faceRecognitionFeatureSet, "face_recognition");
 		
 	}
 
 	private Boolean setAccessStateAndHandleUserChanges(String option, Boolean acessState, UUID user_id, String faceRecognitionFeatureSet, String fingerPrintFeatureSet, String rfidScan) {
-		if(user_id != null && option != null) {
+		
+		System.out.println("option - " + option);
+		System.out.println("user_id - " + user_id);
+		if(this.user_id != null && this.option != null) {
 			if (option.equals("update")) {
-				user.updateUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+				this.user.updateUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
 				return true;
 			}
 			else if(option.equals("add")) {
-				user.addUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+				this.user.addUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
 				return true;
 			}
 			else {
 				user.deleteUser(user_id);
 			}
+		}
+		else {
+			System.out.println("User_id missing, hence data updation does not take place");
 		}
 		return false;
 	}
@@ -76,13 +93,21 @@ public class AdminControlSystem {
 		if(configInput != null && this.configState != configInput)
 			this.setConfig(configInput);
 
+		this.setUserId(user_id);
+		this.setOption(option);
 		this.setIsFaceRecognition(faceRecognitionFeatureSet);
 		this.setIsFingerPrint(fingerPrintFeatureSet);
 		this.setIsRFID(rfidScan);
 
-		if(this.isRFID && this.isFaceRecognition && this.isFingerPrint) {
+		System.out.println(" isFaceRecognition - " + this.isFaceRecognition);
+		System.out.println(" isFingerPrint - " + this.isFingerPrint);
+		System.out.println(" isRFID - " + this.isRFID);
+
+		if(!this.isRFID && !this.isFaceRecognition && !this.isFingerPrint) {
 			this.accessState = this.setAccessStateAndHandleUserChanges(this.option, this.accessState, this.user_id, faceRecognitionFeatureSet, fingerPrintFeatureSet, rfidScan);
 		}
+		else
+			System.out.println("User already exists as data matched for one of the verification processes");
 
 		AdminControlSystemOutput acsOutput = new AdminControlSystemOutput();
 
