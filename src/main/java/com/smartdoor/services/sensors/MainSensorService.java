@@ -26,6 +26,8 @@ public class MainSensorService implements Runnable{
     public static FeatureSet getRFIDOutput() {
         return rfidOutput;
     }
+
+    public static  FeatureSet getCamOutput(){return camOutput;}
     @Override
     public void run() {
         // Simulate processing for the sensor
