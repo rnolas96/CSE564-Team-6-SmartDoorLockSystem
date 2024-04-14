@@ -23,7 +23,7 @@ public class RFIDScanner {
 	String keySerializer = StringSerializer.class.getName();
 	String valueSerializer = StringSerializer.class.getName();
 
-	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+	public KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
 	private boolean captured;
 
@@ -37,7 +37,7 @@ public class RFIDScanner {
 
 	private FeatureSet finalScan;
 
-	String filePath = "src/main/java/com/smartdoor/data/RFIDFeatureMap.json";
+	public String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
 
 	private boolean checkScanned(boolean scanned) {
 		return false;

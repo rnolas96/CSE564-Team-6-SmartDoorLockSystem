@@ -23,7 +23,7 @@ public class AdminControlSystem {
 
 	private boolean isFaceRecognition;
 
-	private DataService dataService = new DataService();
+	public DataService dataService = new DataService();
 
 	private String option;
 
@@ -103,11 +103,7 @@ public class AdminControlSystem {
 		System.out.println(" isFingerPrint - " + this.isFingerPrint);
 		System.out.println(" isRFID - " + this.isRFID);
 
-		if(!this.isRFID && !this.isFaceRecognition && !this.isFingerPrint) {
-			this.accessState = this.setAccessStateAndHandleUserChanges(this.option, this.accessState, this.user_id, faceRecognitionFeatureSet, fingerPrintFeatureSet, rfidScan);
-		}
-		else
-			System.out.println("User already exists as data matched for one of the verification processes");
+		this.accessState = this.setAccessStateAndHandleUserChanges(this.option, this.accessState, this.user_id, faceRecognitionFeatureSet, fingerPrintFeatureSet, rfidScan);
 
 		AdminControlSystemOutput acsOutput = new AdminControlSystemOutput();
 
