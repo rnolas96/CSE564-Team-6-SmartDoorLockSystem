@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.smartdoor.models.AdminControlSystemOutput;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Notification;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CentralManagementSystem extends Thread {
 
@@ -25,6 +26,16 @@ public class CentralManagementSystem extends Thread {
 	private FeatureSet faceRecognitionFeatureset;
 
 	private FeatureSet rfidScan;
+
+	String topic = "cms";
+	String infoKey = "Info";
+	String errorKey = "Error";
+	String value;
+
+	String keySerializer = StringSerializer.class.getName();
+	String valueSerializer = StringSerializer.class.getName();
+
+	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
 	private ArrayList<Boolean> config = new ArrayList<Boolean>() {{
 		add(true);
@@ -56,8 +67,16 @@ public class CentralManagementSystem extends Thread {
         try {
             while (true) {
                 System.out.println("Admin Controls: ");
+
+				value="Admin Controls:";
+				kafkaProducer.sendMessage(topic,infoKey,value);
+
 				System.out.println("Enter user management option(Type No to skip): ");
 				String optionInput = scanner.nextLine();
+
+				value = "user input : "+optionInput;
+				kafkaProducer.sendMessage(topic,infoKey,value);
+
 				
 				if(!optionInput.equals("No")) {
 					this.option = optionInput;
@@ -65,10 +84,15 @@ public class CentralManagementSystem extends Thread {
 					if(optionInput.equals("delete") || optionInput.equals("update")) {
 						System.out.println("Enter user id to update/delete");
 						String userId = scanner.nextLine();
+
+						value= "userId : "+userId;
+
 						try {
 							this.userId = UUID.fromString(userId);
 						} catch (Exception e) {
 							System.out.println("Invalid UUID entered");
+							value = "Invalid UUID entered";
+							kafkaProducer.sendMessage(topic,infoKey,value);
 						}
 					}
 					else {
@@ -79,6 +103,7 @@ public class CentralManagementSystem extends Thread {
                 String configInput = scanner.nextLine();
 
 				if(!configInput.equals("No")) {
+
 					String cleanInput = configInput.replaceAll("[{}\\s]", "");
 					String[] booleanStrings = cleanInput.split(",");
 					this.config = new ArrayList<>();
@@ -99,14 +124,25 @@ public class CentralManagementSystem extends Thread {
 	private void centralProcessing() {
 
 		if(this.option != null) {
+			value = "comes here to admin case";
+			kafkaProducer.sendMessage(topic,infoKey,value);
+
 			System.out.println("comes here to admin case");
 			AdminControlSystemOutput acsOutput = new AdminControlSystemOutput();
+
+
 			acsOutput = adminControlSystem.adminControlProcessing(this.fingerPrintFeatureset.value, this.faceRecognitionFeatureset.value, this.rfidScan.value, this.accessState, this.userId, this.config, this.option);		
 			this.accessState = acsOutput.accessState;
+			value = "accessState - " + acsOutput.accessState;
+			kafkaProducer.sendMessage(topic,infoKey,value);
+
 			System.out.println("accessState - " + acsOutput.accessState);
 		}
 		else {
 			System.out.println("comes here to cvs case");
+			value = "accessState - comes here to cvs case";
+			kafkaProducer.sendMessage(topic,infoKey,value);
+
 			this.accessState = combinedVerificationSystem.combinedVerificationProcessing(this.fingerPrintFeatureset.value, this.faceRecognitionFeatureset.value, this.rfidScan.value, this.config);
 		}
 		

@@ -5,7 +5,6 @@ import java.util.concurrent.CountDownLatch;
 import com.smartdoor.models.Barcode;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Fingerprint;
-
 public class MainSensorService implements Runnable{
     private final String sensorName;
     private final String sensorInput;
@@ -14,6 +13,7 @@ public class MainSensorService implements Runnable{
     private static FeatureSet fpOutput;
     private static FeatureSet rfidOutput;
     private static FeatureSet camOutput;
+
 
     public MainSensorService(String sensorName, String sensorInput, CountDownLatch latch) {
         this.sensorName = sensorName;
@@ -39,8 +39,9 @@ public class MainSensorService implements Runnable{
                 Fingerprint fingerprint = new Fingerprint();
                 fingerprint.value = this.sensorInput;
                 fpOutput = fp.biometricProcessor(false, fingerprint, 1);
-                System.out.println("output - " + this.fpOutput.value);
+
                 Thread.sleep(2000);
+
                 System.out.println("Waiting for sleep");
 
             } catch (Exception e) {
@@ -60,7 +61,7 @@ public class MainSensorService implements Runnable{
                 e.printStackTrace();
             }
         }
-        
+
         System.out.println("Processing for " + sensorName + " completed.");
         // Count down the latch to indicate that this sensor thread has finished processing
         latch.countDown();

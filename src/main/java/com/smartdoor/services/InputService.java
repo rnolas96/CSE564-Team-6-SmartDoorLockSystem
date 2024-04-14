@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
+import com.smartdoor.exceptions.UnauthorizedException;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.services.sensors.MainSensorService;
+
+import javax.naming.ldap.UnsolicitedNotification;
 
 public class InputService  {
     private final CountDownLatch latch = new CountDownLatch(3);
@@ -15,13 +18,13 @@ public class InputService  {
     private FeatureSet faceRecognitionFeatureSet = new FeatureSet();
     private FeatureSet rfidFeatureSet = new FeatureSet();
 
-
     private void callCentralManagementSystem(FeatureSet fingerPrintFeatureSet, FeatureSet faceRecognitionFeatureset, FeatureSet rfidScan) {
 
         CentralManagementSystem centralManagementSystem = new CentralManagementSystem(fingerPrintFeatureSet, faceRecognitionFeatureset, rfidScan);
         // Implement code to call Central Management System
         centralManagementSystem.start();
-        System.out.println("Central Management System called.");
+         System.out.println("Central Management System called.");
+
     }
     private String getSensorInput(String sensorName) {
 
@@ -32,15 +35,22 @@ public class InputService  {
             if(sensorName == "fingerprint") {
                 System.out.println("Enter the fingerprint -");
                 input = scanner.nextLine();  //"fingerPrintUser1";
+
             }
             else if(sensorName == "rfidScan") {
                 System.out.println("Place the rfid -");
                 input = scanner.nextLine(); // "RFIDUser1";
+
+
             }
             else {
                 System.out.println("Face the camera -");
                 input = scanner.nextLine();  //"faceRecognitionUser1";
+
+
+
             }
+
             return input;
 
         } finally {
@@ -67,12 +77,13 @@ public class InputService  {
             this.faceRecognitionFeatureSet = MainSensorService.getCamOutput();
             this.rfidFeatureSet = MainSensorService.getRFIDOutput();
 
-
-
             // Call middleware service after all sensor threads have finished
             this.callCentralManagementSystem(this.fingerPrintFeatureSet, this.faceRecognitionFeatureSet, this.rfidFeatureSet);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        catch(UnauthorizedException ex){
+            System.out.println("error"+ex.getMessage());
         }
     }
 
