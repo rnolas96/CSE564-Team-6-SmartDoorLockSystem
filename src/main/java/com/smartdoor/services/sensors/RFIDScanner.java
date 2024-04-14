@@ -5,10 +5,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartdoor.models.Barcode;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Notification;
+import com.smartdoor.services.KafkaProducerService;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.File;
 
 public class RFIDScanner {
+	String topic = "rfidService";
+	public RFIDScanner(){
+
+
+		String key = "Info";
+		String value = "rifd scanner initialized";
+
+		kafkaProducer.sendMessage(topic, key, value);
+	}
+	String keySerializer = StringSerializer.class.getName();
+	String valueSerializer = StringSerializer.class.getName();
+
+	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
 	private boolean captured;
 
@@ -30,6 +45,11 @@ public class RFIDScanner {
 
 	private FeatureSet getFeatureSet(Barcode RFIDScan) throws Exception {
 		// Read the JSON file
+
+		String key = "Info";
+		String value = "getFeatureset invoked";
+
+		kafkaProducer.sendMessage(topic, key, value);
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode rootNode = objectMapper.readTree(new File(filePath));
 
@@ -38,7 +58,10 @@ public class RFIDScanner {
 		if (rfid != null) {
 
 			String rfidValue = rfid.get("value").asText();
-			System.out.println("rfid="+rfidValue.toString());
+			key = "Info";
+			value = "RFID FeatureSet = "+rfidValue.toString();
+
+			kafkaProducer.sendMessage(topic, key, value);
 
 			FeatureSet featureSet = new FeatureSet();
 			featureSet.value = rfidValue;
@@ -47,6 +70,10 @@ public class RFIDScanner {
 
 		}
 		else{
+			key = "Error";
+			value = "RFID data not found";
+			kafkaProducer.sendMessage(topic, key, value);
+
 
 			throw new Exception("data not found");
 		}
@@ -68,5 +95,7 @@ public class RFIDScanner {
 		finalScan = scanned;
 		return finalScan;
 	}
+
+
 
 }
