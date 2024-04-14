@@ -25,7 +25,8 @@ public class FingerprintScanner {
 
 	private FeatureSet finalScan;
 
-	String filePath = "src/main/java/com/smartdoor/Data/FingerPrintFeatureSetMap.json";
+	String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
+	// String filePath = "./src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
 
 	private boolean checkCaptured(boolean captured) {
 		if(captured){
