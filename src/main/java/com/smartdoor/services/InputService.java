@@ -11,9 +11,9 @@ import com.smartdoor.services.sensors.MainSensorService;
 public class InputService  {
     private final CountDownLatch latch = new CountDownLatch(3);
 
-    private final FeatureSet fingerPrintFeatureSet = new FeatureSet();
-    private final FeatureSet faceRecognitionFeatureSet = new FeatureSet();
-    private final FeatureSet rfidFeatureSet = new FeatureSet();
+    private FeatureSet fingerPrintFeatureSet = new FeatureSet();
+    private FeatureSet faceRecognitionFeatureSet = new FeatureSet();
+    private FeatureSet rfidFeatureSet = new FeatureSet();
 
 
     private void callCentralManagementSystem(FeatureSet fingerPrintFeatureSet, FeatureSet faceRecognitionFeatureset, FeatureSet rfidScan) {
@@ -23,7 +23,6 @@ public class InputService  {
         centralManagementSystem.start();
         System.out.println("Central Management System called.");
     }
-
     private String getSensorInput(String sensorName) {
 
         Scanner scanner = new Scanner(System.in);
@@ -51,9 +50,9 @@ public class InputService  {
 
     public void startSensorThreads() {
         // Start a thread for each sensor with its corresponding input
-        Thread sensor1Thread = new Thread(new MainSensorService("fingerprint", getSensorInput("fingerprint"), latch, this.fingerPrintFeatureSet));
-        Thread sensor2Thread = new Thread(new MainSensorService("faceRecognition", getSensorInput("faceRecognition"), latch, this.faceRecognitionFeatureSet));
-        Thread sensor3Thread = new Thread(new MainSensorService("rfidScan", getSensorInput("rfidScan"), latch, this.rfidFeatureSet));
+        Thread sensor1Thread = new Thread(new MainSensorService("fingerprint", getSensorInput("fingerprint"), latch));
+        Thread sensor2Thread = new Thread(new MainSensorService("faceRecognition", getSensorInput("faceRecognition"), latch));
+        Thread sensor3Thread = new Thread(new MainSensorService("rfidScan", getSensorInput("rfidScan"), latch));
 
         sensor1Thread.start();
         sensor2Thread.start();
@@ -63,6 +62,12 @@ public class InputService  {
             // Wait for all sensor threads to finish
             latch.await();
             System.out.println("All sensor threads have finished processing.");
+
+            this.fingerPrintFeatureSet = MainSensorService.getFingerPrintOutput();
+            this.faceRecognitionFeatureSet = MainSensorService.getFingerPrintOutput();
+            this.rfidFeatureSet = MainSensorService.getRFIDOutput();
+
+
 
             // Call middleware service after all sensor threads have finished
             this.callCentralManagementSystem(this.fingerPrintFeatureSet, this.faceRecognitionFeatureSet, this.rfidFeatureSet);
