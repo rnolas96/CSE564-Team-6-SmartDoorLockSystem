@@ -10,7 +10,7 @@ public class KafkaProducerService {
     private final String bootstrapServers;
     private final String keySerializer;
     private final String valueSerializer;
-    private final KafkaProducer<String, String> producer;
+    public KafkaProducer<String, String> producer;
 
     public KafkaProducerService(String bootstrapServers, String keySerializer, String valueSerializer) {
         this.bootstrapServers = bootstrapServers;

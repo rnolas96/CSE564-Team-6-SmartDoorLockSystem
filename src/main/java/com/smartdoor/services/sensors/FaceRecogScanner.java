@@ -28,7 +28,7 @@ public class FaceRecogScanner {
 
 	String filePath = "src/main/java/com/smartdoor/data/PhotoFeatureMap.json";
 
-	private CameraParam checkDistance(int dist_threshold, Photo photo, CameraParam cameraParam) {
+	public CameraParam checkDistance(int dist_threshold, Photo photo, CameraParam cameraParam) {
 		if (photo.distance < dist_threshold) {
 			cameraParam.lightIntensity = photo.lightIntensity;
 			cameraParam.cameraAngle = photo.cameraAngle;
@@ -37,7 +37,7 @@ public class FaceRecogScanner {
 		return cameraParam;
     }
 
-	private FeatureSet getFeatureSet(Photo photo) throws Exception {
+	public FeatureSet getFeatureSet(Photo photo) throws Exception {
 
 		// Read the JSON file
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -59,7 +59,7 @@ public class FaceRecogScanner {
 		}
     }
 
-	private boolean getFeedback(CameraParam updatedCameraParam, Photo photo, Feedback feedback, boolean validPhoto) {
+	public boolean getFeedback(CameraParam updatedCameraParam, Photo photo, Feedback feedback, boolean validPhoto) {
 		System.out.println("Correcting camera angle and light intensity.");
 		if (updatedCameraParam.lightIntensity < 80){
 			updatedCameraParam.lightIntensity += 10;
@@ -108,7 +108,7 @@ public class FaceRecogScanner {
             }
 		}
 
-		finalScan = scanned;
+		finalScan = scanned != null ? scanned : new FeatureSet(); // Return an empty FeatureSet if scanned is null
 		return finalScan;
 	}
 

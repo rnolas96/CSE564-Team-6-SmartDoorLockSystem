@@ -25,14 +25,14 @@ public class FingerprintScanner {
 
 	private FeatureSet finalScan;
 
-	String filePath = "src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
+	String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
 	// String filePath = "./src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
 
 	private boolean checkCaptured(boolean captured) {
         return captured;
 	}
 
-	private FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
+	public FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
 
 
 		// Read the JSON file
@@ -69,7 +69,7 @@ public class FingerprintScanner {
 			}
 		}
 
-		finalScan = scanned;
+		finalScan = scanned != null ? scanned : new FeatureSet(); // Return an empty FeatureSet if scanned is null
 		return finalScan;
 
 	}

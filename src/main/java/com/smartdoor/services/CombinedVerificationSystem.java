@@ -14,7 +14,7 @@ public class CombinedVerificationSystem {
 
 	private Boolean isFaceRecognition;
 
-	private DataService dataService = new DataService();
+	public DataService dataService = new DataService();
 
 	public List<Boolean> config;
 

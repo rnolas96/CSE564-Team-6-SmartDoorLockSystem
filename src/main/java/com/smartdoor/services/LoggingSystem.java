@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class LoggingSystem {
     public Log logged_data;
-    private static final Logger LOGGER = Logger.getLogger(LoggingSystem.class.getName());
+    public Logger LOGGER = Logger.getLogger(LoggingSystem.class.getName());
 
 
     public void log_error_data(String  type, String logged_data) {
