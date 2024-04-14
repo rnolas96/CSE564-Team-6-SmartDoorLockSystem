@@ -64,7 +64,7 @@ public class InputService  {
             System.out.println("All sensor threads have finished processing.");
 
             this.fingerPrintFeatureSet = MainSensorService.getFingerPrintOutput();
-            this.faceRecognitionFeatureSet = MainSensorService.getFingerPrintOutput();
+            this.faceRecognitionFeatureSet = MainSensorService.getCamOutput();
             this.rfidFeatureSet = MainSensorService.getRFIDOutput();
 
 
