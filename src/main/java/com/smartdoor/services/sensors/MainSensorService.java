@@ -2,9 +2,7 @@ package com.smartdoor.services.sensors;
 
 import java.util.concurrent.CountDownLatch;
 
-import com.smartdoor.models.Barcode;
-import com.smartdoor.models.FeatureSet;
-import com.smartdoor.models.Fingerprint;
+import com.smartdoor.models.*;
 
 public class MainSensorService implements Runnable{
     private final String sensorName;
@@ -27,37 +25,56 @@ public class MainSensorService implements Runnable{
         return rfidOutput;
     }
 
-    public static  FeatureSet getCamOutput(){return camOutput;}
+    public static  FeatureSet getCamOutput(){
+        return camOutput;
+    }
     @Override
     public void run() {
         // Simulate processing for the sensor
         System.out.println("Processing for " + sensorName + " started with input: " + sensorInput);
 
-        if(sensorName.equals("fingerprint")) {
-            try {
-                FingerprintScanner fp = new FingerprintScanner();
-                Fingerprint fingerprint = new Fingerprint();
-                fingerprint.value = this.sensorInput;
-                fpOutput = fp.biometricProcessor(false, fingerprint, 1);
-                System.out.println("output - " + this.fpOutput.value);
-                Thread.sleep(2000);
-                System.out.println("Waiting for sleep");
+        switch (sensorName) {
+            case "fingerprint" -> {
+                try {
+                    FingerprintScanner fp = new FingerprintScanner();
+                    Fingerprint fingerprint = new Fingerprint();
+                    fingerprint.value = this.sensorInput;
+                    fpOutput = fp.biometricProcessor(false, fingerprint, 1);
+                    System.out.println("output - " + this.fpOutput.value);
+                    Thread.sleep(2000);
+                    System.out.println("Waiting for sleep");
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        else if(sensorName.equals("rfidScan")) {
-            try {
-                RFIDScanner rfid = new RFIDScanner();
-                Barcode rfidScan = new Barcode();
-                rfidScan.value = this.sensorInput;
-                rfidOutput= rfid.RFIDProcessor(false, rfidScan, 1);
-                Thread.sleep(5000);
-                System.out.println("Waiting for sleep");
+            case "rfidScan" -> {
+                try {
+                    RFIDScanner rfid = new RFIDScanner();
+                    Barcode rfidScan = new Barcode();
+                    rfidScan.value = this.sensorInput;
+                    rfidOutput= rfid.RFIDProcessor(false, rfidScan, 1);
+                    Thread.sleep(5000);
+                    System.out.println("Waiting for sleep");
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            case "faceRecognition" -> {
+                try {
+                    FaceRecogScanner faceRecognition = new FaceRecogScanner();
+                    Photo photo = new Photo();
+                    Feedback feedback = new Feedback();
+                    CameraParam cameraParam = new CameraParam();
+                    photo.value = this.sensorInput;
+                    camOutput= faceRecognition.faceRecogProcessor(false, cameraParam, photo, feedback, 1);
+                    Thread.sleep(5000);
+                    System.out.println("Waiting for sleep");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         
