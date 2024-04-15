@@ -2,7 +2,9 @@ package com.smartdoor.services.sensors;
 
 import java.util.concurrent.CountDownLatch;
 
+
 import com.smartdoor.models.*;
+
 
 public class MainSensorService implements Runnable{
     private final String sensorName;
@@ -12,6 +14,7 @@ public class MainSensorService implements Runnable{
     private static FeatureSet fpOutput;
     private static FeatureSet rfidOutput;
     private static FeatureSet camOutput;
+
 
     public MainSensorService(String sensorName, String sensorInput, CountDownLatch latch) {
         this.sensorName = sensorName;
@@ -32,6 +35,7 @@ public class MainSensorService implements Runnable{
     public void run() {
         // Simulate processing for the sensor
         System.out.println("Processing for " + sensorName + " started with input: " + sensorInput);
+
 
         switch (sensorName) {
             case "fingerprint" -> {
@@ -77,7 +81,7 @@ public class MainSensorService implements Runnable{
                 }
             }
         }
-        
+
         System.out.println("Processing for " + sensorName + " completed.");
         // Count down the latch to indicate that this sensor thread has finished processing
         latch.countDown();

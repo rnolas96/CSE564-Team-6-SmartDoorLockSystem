@@ -2,6 +2,7 @@ package com.smartdoor.services.sensors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smartdoor.exceptions.UnauthorizedException;
 import com.smartdoor.models.Barcode;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Notification;
@@ -11,19 +12,20 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import java.io.File;
 
 public class RFIDScanner {
-	String topic = "rfidService";
-	public RFIDScanner(){
+	String topic = "rfid";
+	String infoKey = "Info";
+	String errorKey = "Error";
+	String value;
 
-
-		String key = "Info";
-		String value = "rifd scanner initialized";
-
-		kafkaProducer.sendMessage(topic, key, value);
-	}
 	String keySerializer = StringSerializer.class.getName();
 	String valueSerializer = StringSerializer.class.getName();
 
-	public KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+	public RFIDScanner(){
+
+		value = "rifd scanner initialized";
+		kafkaProducer.sendMessage(topic, infoKey, value);
+	}
 
 	private boolean captured;
 
@@ -46,10 +48,6 @@ public class RFIDScanner {
 	private FeatureSet getFeatureSet(Barcode RFIDScan) throws Exception {
 		// Read the JSON file
 
-		String key = "Info";
-		String value = "getFeatureset invoked";
-
-		kafkaProducer.sendMessage(topic, key, value);
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode rootNode = objectMapper.readTree(new File(filePath));
 
@@ -58,10 +56,9 @@ public class RFIDScanner {
 		if (rfid != null) {
 
 			String rfidValue = rfid.get("value").asText();
-			key = "Info";
-			value = "RFID FeatureSet = "+rfidValue.toString();
 
-			kafkaProducer.sendMessage(topic, key, value);
+			value = "success: RFID FeatureSet = "+rfidValue.toString();
+			kafkaProducer.sendMessage(topic, infoKey, value);
 
 			FeatureSet featureSet = new FeatureSet();
 			featureSet.value = rfidValue;
@@ -70,12 +67,10 @@ public class RFIDScanner {
 
 		}
 		else{
-			key = "Error";
 			value = "RFID data not found";
-			kafkaProducer.sendMessage(topic, key, value);
+			kafkaProducer.sendMessage(topic, errorKey, value);
 
-
-			throw new Exception("data not found");
+			throw new UnauthorizedException("rfid data not found",401);
 		}
 
 	}
@@ -86,8 +81,24 @@ public class RFIDScanner {
 				scanned = getFeatureSet(RFIDScan);
 				captured = true;
 			}
+
+			catch (UnauthorizedException ex) {
+				if (ex.getStatusCode() == 401) {
+					//send Notification
+
+					value = "rfid access unnauthorized";
+					kafkaProducer.sendMessage(topic,errorKey,value);
+
+					return scanned;
+				}
+			}
+
 			catch (Exception ex){
-				throw new Exception("error occurred while getting featureset" +  ex.getMessage());
+
+				value = "error occured while getting rfid featureset";
+				kafkaProducer.sendMessage(topic,errorKey,value);
+
+				throw new Exception("error occurred while getting rfid featureset" +  ex.getMessage());
 
 			}
 		}
