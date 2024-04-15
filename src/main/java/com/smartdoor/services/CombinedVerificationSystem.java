@@ -5,11 +5,13 @@ import java.util.List;
 
 import com.smartdoor.models.AdminControlSystemOutput;
 import com.smartdoor.models.Notification;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CombinedVerificationSystem {
 
+	@Autowired
+	NotificationService notificationService;
 	private Boolean isRFID;
-
 	private Boolean isFingerPrint;
 
 	private Boolean isFaceRecognition;
@@ -19,6 +21,8 @@ public class CombinedVerificationSystem {
 	public List<Boolean> config;
 
 	private Notification notification;
+
+	private  String message;
 
 	private void setConfig(ArrayList<Boolean> config) {
 		this.config = config;
@@ -56,17 +60,39 @@ public class CombinedVerificationSystem {
 		this.setIsFingerPrint(fingerPrintFeatureSet);
 		this.setIsRFID(rfidScan);
 
-		if(this.isFaceRecognition && this.isFingerPrint && this.isRFID)
+		if(this.isFaceRecognition && this.isFingerPrint && this.isRFID) {
+			//notify authentication success
 			accessState = true;
+		}
+		else{
+			//notify authentication success
+		}
 
 		if(this.isFaceRecognition == null) {
-			System.out.println("Notification for face recognition");
+
+			//send notification
+			notification.message = "facerecognition authorization failed";
+			notification.type = "alert";
+			notificationService.notify(notification);
+
 		}
 		if (this.isFingerPrint == null) {
-			System.out.println("Notification for fingerprint scan");
+
+			//send notification
+			notification.message = "fingerprint authorization failed";
+			notification.type = "alert";
+
+			notificationService.notify(notification);
+
 		}
 		if (this.isRFID == null) {
-			System.out.println("Notification for rfid scan");
+
+			//send notification
+			notification.message = "rfid authorization failed";
+			notification.type = "alert";
+
+			notificationService.notify(notification);
+
 		}
 
 		return accessState;
