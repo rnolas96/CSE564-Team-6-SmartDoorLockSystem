@@ -5,20 +5,29 @@ import java.util.List;
 
 import com.smartdoor.models.AdminControlSystemOutput;
 import com.smartdoor.models.Notification;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CombinedVerificationSystem {
 
+	String keySerializer = StringSerializer.class.getName();
+	String valueSerializer = StringSerializer.class.getName();
+	NotificationService notificationService = new NotificationService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 	private Boolean isRFID;
-
 	private Boolean isFingerPrint;
 
 	private Boolean isFaceRecognition;
 
 	public DataService dataService = new DataService();
+	DoorLockService doorLockService = new DoorLockService();
 
 	public List<Boolean> config;
 
-	private Notification notification;
+	private Notification notification = new Notification();
+
+	private  String message;
+
+	private String notificationTopic = "notification";
 
 	private void setConfig(ArrayList<Boolean> config) {
 		this.config = config;
@@ -56,17 +65,57 @@ public class CombinedVerificationSystem {
 		this.setIsFingerPrint(fingerPrintFeatureSet);
 		this.setIsRFID(rfidScan);
 
-		if(this.isFaceRecognition && this.isFingerPrint && this.isRFID)
+		if(this.isFaceRecognition && this.isFingerPrint && this.isRFID) {
+			//notify authentication success
+			System.out.println("Authorization successful: Access Granted");
+			notification.message = "Authorization successful: Access Granted ";
+			notification.type = "alert";
+			notification.topic = notificationTopic;
+
+			notificationService.notify(notification);
 			accessState = true;
+			doorLockService.setLockedState(accessState);
+		}
+		else{
+			notification.message = "Authorization unSuccessful: Access Denied ";
+			System.out.println("Authorization unSuccessful: Access Denied");
+			notification.type = "alert";
+			notification.topic = notificationTopic;
+			doorLockService.setLockedState(accessState);
+
+
+			notificationService.notify(notification);
+		}
 
 		if(this.isFaceRecognition == null) {
-			System.out.println("Notification for face recognition");
+
+			//send notification
+			notification.message = "facerecognition authorization failed";
+			notification.type = "alert";
+			notification.topic = notificationTopic;
+			notificationService.notify(notification);
+
 		}
 		if (this.isFingerPrint == null) {
-			System.out.println("Notification for fingerprint scan");
+
+			//send notification
+			notification.message = "fingerprint authorization failed";
+			notification.type = "alert";
+			notification.topic = notificationTopic;
+
+
+			notificationService.notify(notification);
+
 		}
 		if (this.isRFID == null) {
-			System.out.println("Notification for rfid scan");
+
+			//send notification
+			notification.message = "rfid authorization failed";
+			notification.type = "alert";
+			notification.topic = notificationTopic;
+
+			notificationService.notify(notification);
+
 		}
 
 		return accessState;

@@ -6,11 +6,16 @@ import java.util.UUID;
 import com.smartdoor.models.AdminControlSystemOutput;
 import com.smartdoor.models.Notification;
 import com.smartdoor.models.User;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
 public class AdminControlSystem {
 
+	String keySerializer = StringSerializer.class.getName();
+	String valueSerializer = StringSerializer.class.getName();
+	NotificationService notificationService = new NotificationService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 	private ArrayList<Boolean> configState = new ArrayList<>() {{
 		add(true);
 		add(true); 
@@ -72,17 +77,42 @@ public class AdminControlSystem {
 		if(this.user_id != null && this.option != null) {
 			if (option.equals("update")) {
 				this.user.updateUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+
+				//notification user updated
+				notification.message="user :"+ user_id + " user Updated successfully";
+				notification.type = "alert";
+				notificationService.notify(notification);
+
 				return true;
 			}
 			else if(option.equals("add")) {
 				this.user.addUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+
+				// otification user Added
+				notification.message="user :"+ user_id + " user Added successfully";
+				notification.type = "alert";
+				notification.topic ="notification";
+				notificationService.notify(notification);
+
 				return true;
 			}
 			else {
+				// notification delete
+				notification.message="user :"+ user_id + " user Deleted successfully";
+				notification.type = "alert";
+				notification.topic = "notification";
+				notificationService.notify(notification);
+
 				user.deleteUser(user_id);
 			}
 		}
 		else {
+			// notification
+			notification.message="user Id missing: updation failerd";
+			notification.type = "alert";
+
+			notificationService.notify(notification);
+
 			System.out.println("User_id missing, hence data updation does not take place");
 		}
 		return false;
