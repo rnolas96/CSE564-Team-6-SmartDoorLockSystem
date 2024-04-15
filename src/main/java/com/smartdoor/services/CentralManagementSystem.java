@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.smartdoor.Actuator.DeadBolt;
 import com.smartdoor.models.AdminControlSystemOutput;
 import com.smartdoor.models.FeatureSet;
 import com.smartdoor.models.Notification;
@@ -144,6 +145,18 @@ public class CentralManagementSystem extends Thread {
 			kafkaProducer.sendMessage(topic,infoKey,value);
 
 			this.accessState = combinedVerificationSystem.combinedVerificationProcessing(this.fingerPrintFeatureset.value, this.faceRecognitionFeatureset.value, this.rfidScan.value, this.config);
+		}
+
+		if(this.accessState){
+			//DoorLockService doorLockService = new DoorLockService();
+
+			DoorLockKafkaProducer doorLockKafkaProducer = new DoorLockKafkaProducer();
+
+			doorLockKafkaProducer.produceMessage(!this.accessState);
+
+			DeadBolt deadBoltSensor = new DeadBolt();
+			deadBoltSensor.setDeadboltSensorLockedState(!this.accessState);
+
 		}
 		
 	}

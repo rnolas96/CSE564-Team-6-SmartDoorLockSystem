@@ -20,7 +20,7 @@ public class RFIDScanner {
 	String keySerializer = StringSerializer.class.getName();
 	String valueSerializer = StringSerializer.class.getName();
 
-	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+	public KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 	public RFIDScanner(){
 
 		value = "rifd scanner initialized";

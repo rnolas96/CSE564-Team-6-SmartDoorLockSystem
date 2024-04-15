@@ -1,21 +1,44 @@
 package com.smartdoor.project;
 
+import com.smartdoor.Actuator.DeadBoltKafkaProducer;
 import com.smartdoor.models.Barcode;
 import com.smartdoor.models.Fingerprint;
-import com.smartdoor.services.InputService;
+import com.smartdoor.services.*;
 import com.smartdoor.services.sensors.FingerprintScanner;
 import com.smartdoor.services.sensors.RFIDScanner;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.smartdoor.services.CentralManagementSystem;
+import java.util.concurrent.locks.Lock;
 
 @SpringBootApplication
 public class ProjectApplication {
 
 	public static void main(final String[] args) throws Exception {
 
+		String topic = "doorlockstate";
+		String infoKey = "Info";
+		String errorKey = "Error";
+		String value;
+
+		String keySerializer = StringSerializer.class.getName();
+		String valueSerializer = StringSerializer.class.getName();
+
+
+
+
+
 		SpringApplication.run(ProjectApplication.class, args);
+		// scenario to test auth breach
+		DoorLockKafkaProducer doorLockKafkaProducer = new DoorLockKafkaProducer();
+		DeadBoltKafkaProducer deadBoltKafkaProducer = new DeadBoltKafkaProducer("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+
+		doorLockKafkaProducer.produceMessage(true);
+
+		deadBoltKafkaProducer.produceMessage(topic,infoKey,String.valueOf(true));
+
+
 
 		InputService inputService = new InputService();
 		inputService.startSensorThreads();

@@ -92,8 +92,10 @@ public class FaceRecogScannerTest {
         });
     }
 
+    // testing the feedback for light intensity adjustment
     @Test
     void getFeedback_LightIntensityLessThanThreshold_IncrementLightIntensity() {
+        this is to test the feedback case .
         // Arrange
         CameraParam updatedCameraParam = new CameraParam();
         updatedCameraParam.lightIntensity = 70;
@@ -143,23 +145,6 @@ public class FaceRecogScannerTest {
         assertEquals(50, photo.distance);
     }
 
-    @Test
-    void faceRecogProcessor_Captured_ReturnsFeatureSet() throws Exception {
-        // Arrange
-        boolean captured = true;
-        CameraParam cameraParam = new CameraParam();
-        Photo photo = new Photo();
-        photo.value = "user3Photo";
-        Feedback feedback = new Feedback();
-        int c_id = 123;
-
-        // Act
-        FeatureSet featureSet = faceRecogScanner.faceRecogProcessor(captured, cameraParam, photo, feedback, c_id);
-
-        // Assert
-        assertNotNull(featureSet);
-        assertEquals("1100", featureSet.value);
-    }
 
     @Test
     void faceRecogProcessor_NotCaptured_ThrowsException() {

@@ -10,7 +10,7 @@ public class DataService {
         this.mockData = new HashMap<>();
 
         Map<String, String> faceRecognitionData = new HashMap<>();
-        faceRecognitionData.put("550e8400-e29b-41d4-a716-446655440000", "1000101");
+        faceRecognitionData.put("550e8400-e29b-41d4-a716-446655440000", "0101");
         faceRecognitionData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "1001010");
         this.mockData.put("face_recognition", faceRecognitionData);
 

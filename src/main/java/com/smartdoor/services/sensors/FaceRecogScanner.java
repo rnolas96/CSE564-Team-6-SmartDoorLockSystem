@@ -63,12 +63,13 @@ public class FaceRecogScanner {
 		System.out.println("Correcting camera angle and light intensity.");
 		if (updatedCameraParam.lightIntensity < 80){
 			updatedCameraParam.lightIntensity += 10;
-		} else if (updatedCameraParam.cameraAngle < 45) {
+		}
+		if (updatedCameraParam.cameraAngle < 45) {
 			updatedCameraParam.cameraAngle += 10;
-		} else {
+		}
+		if (photo.distance > dist_threshold) {
 			photo.distance -= 10;
 		}
-
 		validPhoto = updatedCameraParam.lightIntensity < 80 & updatedCameraParam.cameraAngle < 45 & photo.distance < 10;
 
         feedback.updatedCameraParam = updatedCameraParam;
