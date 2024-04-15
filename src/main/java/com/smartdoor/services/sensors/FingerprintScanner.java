@@ -39,16 +39,12 @@ public class FingerprintScanner {
 
 	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
+
 	private boolean checkCaptured(boolean captured) {
-		if(captured){
-			return true;
-		}
-		else {
-			return false;
-		}
+        return captured;
 	}
 
-	private FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
+	public FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
 
 
 		// Read the JSON file
@@ -103,7 +99,7 @@ public class FingerprintScanner {
 			}
 		}
 
-		finalScan = scanned;
+		finalScan = scanned != null ? scanned : new FeatureSet(); // Return an empty FeatureSet if scanned is null
 		return finalScan;
 
 	}

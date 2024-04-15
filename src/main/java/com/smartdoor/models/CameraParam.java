@@ -2,8 +2,8 @@ package com.smartdoor.models;
 
 public class CameraParam {
 
-	private int lightIntensity;
+	public int lightIntensity;
 
-	private int cameraAngle;
+	public int cameraAngle;
 
 }

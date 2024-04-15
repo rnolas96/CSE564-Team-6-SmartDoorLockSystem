@@ -27,7 +27,6 @@ public class RFIDScanner {
 		kafkaProducer.sendMessage(topic, infoKey, value);
 	}
 
-
 	private boolean captured;
 
 	private FeatureSet scanned;
@@ -40,7 +39,7 @@ public class RFIDScanner {
 
 	private FeatureSet finalScan;
 
-	String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/RFIDFeatureMap.json";
+	public String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
 
 	private boolean checkScanned(boolean scanned) {
 		return false;
