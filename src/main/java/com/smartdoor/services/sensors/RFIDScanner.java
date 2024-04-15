@@ -39,7 +39,7 @@ public class RFIDScanner {
 
 	private FeatureSet finalScan;
 
-	public String filePath = "CSE564-Team-6-SmartDoorLockSystem/src/main/java/com/smartdoor/data/FingerPrintFeatureSetMap.json";
+	public String filePath = "src/main/java/com/smartdoor/data/RFIDFeatureMap.json";
 
 	private boolean checkScanned(boolean scanned) {
 		return false;

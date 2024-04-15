@@ -14,6 +14,6 @@ public class NotificationService {
     KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
     public void notify(Notification notification){
-        kafkaProducer.sendMessage(topic,notification.message,notification.type);
+        kafkaProducer.sendMessage(topic, notification.type,notification.message);
     }
 }

@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 
 public class AdminControlSystem {
-
-	@Autowired
-	NotificationService notificationService;
+	NotificationService notificationService = new NotificationService();
 	private ArrayList<Boolean> configState = new ArrayList<>() {{
 		add(true);
 		add(true); 

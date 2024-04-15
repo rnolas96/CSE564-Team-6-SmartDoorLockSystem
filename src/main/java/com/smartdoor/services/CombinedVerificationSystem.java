@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class CombinedVerificationSystem {
 
-	@Autowired
-	NotificationService notificationService;
+	NotificationService notificationService = new NotificationService();
 	private Boolean isRFID;
 	private Boolean isFingerPrint;
 
@@ -20,7 +19,7 @@ public class CombinedVerificationSystem {
 
 	public List<Boolean> config;
 
-	private Notification notification;
+	private Notification notification = new Notification();
 
 	private  String message;
 
@@ -62,10 +61,17 @@ public class CombinedVerificationSystem {
 
 		if(this.isFaceRecognition && this.isFingerPrint && this.isRFID) {
 			//notify authentication success
+			notification.message = "Authorization successful: Access Granted ";
+			notification.type = "alert";
+
+			notificationService.notify(notification);
 			accessState = true;
 		}
 		else{
-			//notify authentication success
+			notification.message = "Authorization unSuccessful: Access Denied ";
+			notification.type = "alert";
+
+			notificationService.notify(notification);
 		}
 
 		if(this.isFaceRecognition == null) {
