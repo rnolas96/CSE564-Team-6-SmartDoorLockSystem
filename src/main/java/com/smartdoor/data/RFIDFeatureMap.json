@@ -1,5 +1,5 @@
 {
   "user1RFID": {"value": "1000101"},
-  "user2RFID": {"value": "1010"},
-  "user3RFID": {"value": "1100"}
+  "user2RFID": {"value": "101011111"},
+  "user3RFID": {"value": "110011"}
 }

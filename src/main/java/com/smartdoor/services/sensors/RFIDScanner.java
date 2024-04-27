@@ -41,10 +41,6 @@ public class RFIDScanner {
 
 	public String filePath = "src/main/java/com/smartdoor/data/RFIDFeatureMap.json";
 
-	private boolean checkScanned(boolean scanned) {
-		return false;
-	}
-
 	private FeatureSet getFeatureSet(Barcode RFIDScan) throws Exception {
 		// Read the JSON file
 
@@ -98,7 +94,9 @@ public class RFIDScanner {
 				value = "error occured while getting rfid featureset";
 				kafkaProducer.sendMessage(topic,errorKey,value);
 
-				throw new Exception("error occurred while getting rfid featureset" +  ex.getMessage());
+				System.out.println("error occurred while getting rfid featureset" +  ex.getMessage());
+				return new FeatureSet();
+
 
 			}
 		}

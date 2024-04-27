@@ -63,19 +63,22 @@ public class FaceRecogScanner {
 		System.out.println("Correcting camera angle and light intensity.");
 		if (updatedCameraParam.lightIntensity < 80){
 			updatedCameraParam.lightIntensity += 10;
+			System.out.println("corrected lightIntensity"+updatedCameraParam.lightIntensity);
+
 		}
 		if (updatedCameraParam.cameraAngle < 45) {
-			updatedCameraParam.cameraAngle += 10;
+			updatedCameraParam.cameraAngle += 5;
+			System.out.println("corrected cameraAngle"+updatedCameraParam.cameraAngle);
+
 		}
 		if (photo.distance > dist_threshold) {
 			photo.distance -= 10;
 		}
-		validPhoto = updatedCameraParam.lightIntensity < 80 & updatedCameraParam.cameraAngle < 45 & photo.distance < 10;
+		validPhoto = updatedCameraParam.lightIntensity == 80 & updatedCameraParam.cameraAngle == 45 ;
 
         feedback.updatedCameraParam = updatedCameraParam;
 		feedback.photo = photo;
 		feedback.validPhoto = validPhoto;
-
 		return validPhoto;
 	}
 
@@ -95,16 +98,31 @@ public class FaceRecogScanner {
 				captured = true;
 			}
 			catch (Exception ex){
-				validPhoto = getFeedback(updatedCameraParam, photo, feedback, validPhoto);
-				if (validPhoto) {
-					FileWriter file = new FileWriter(filePath);
-					JSONObject jsonObject = new JSONObject();
-					jsonObject.put("user3Photo", String.format("{'value': '1100', 'lightIntensity': %s, 'cameraAngle': %s}", feedback.updatedCameraParam.lightIntensity, feedback.updatedCameraParam.cameraAngle));
-					file.write(jsonObject.toJSONString());
-					file.close();
+
+				//validPhoto = getFeedback(updatedCameraParam, photo, feedback, validPhoto);
+
+				while(!validPhoto) {
+					validPhoto = getFeedback(updatedCameraParam, photo, feedback, validPhoto);
 				}
 
-				throw new Exception("error occurred while getting featureset" +  ex.getMessage());
+				if (validPhoto) {
+					System.out.println("vallid photo value ======"+validPhoto);
+					JSONObject jsonObject = new JSONObject();
+
+					jsonObject.put("lightIntensity",  feedback.updatedCameraParam.lightIntensity);
+					jsonObject.put("cameraAngle", feedback.updatedCameraParam.cameraAngle);
+					System.out.println("featureset generated from face recognition scanner"+jsonObject.get("value"));
+
+					FeatureSet featureSet = new FeatureSet();
+
+					featureSet.value =  photo.value;
+
+					return featureSet;
+
+
+				}
+
+				System.out.println("adjusting camera angle and ligght intensity based on feedback" +  ex.getMessage());
 
             }
 		}

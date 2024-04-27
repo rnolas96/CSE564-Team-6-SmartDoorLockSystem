@@ -10,18 +10,18 @@ public class DataService {
         this.mockData = new HashMap<>();
 
         Map<String, String> faceRecognitionData = new HashMap<>();
-        faceRecognitionData.put("550e8400-e29b-41d4-a716-446655440000", "0101");
-        faceRecognitionData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "1001010");
+        faceRecognitionData.put("550e8400-e29b-41d4-a716-446655440000", "010001");
+        faceRecognitionData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "1100");
         this.mockData.put("face_recognition", faceRecognitionData);
 
         Map<String, String> rfidScanData = new HashMap<>();
         rfidScanData.put("550e8400-e29b-41d4-a716-446655440000", "1000101");
-        rfidScanData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "1001010");
+        rfidScanData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "110011");
         this.mockData.put("rfid_scan", rfidScanData);
 
         Map<String, String> fingerprintScanData = new HashMap<>();
-        fingerprintScanData.put("550e8400-e29b-41d4-a716-446655440000", "1000101");
-        fingerprintScanData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "1001010");
+        fingerprintScanData.put("550e8400-e29b-41d4-a716-446655440000", "000101");
+        fingerprintScanData.put("3d813cbb-47fb-32ba-91df-831e1593ac29", "110010");
         this.mockData.put("fingerprint_scan", fingerprintScanData);
     }
 

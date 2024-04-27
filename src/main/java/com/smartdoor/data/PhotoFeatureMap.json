@@ -1,5 +1,5 @@
 {
-  "user1Photo": {"value": "0101", "lightIntensity": 80, "cameraAngle": 30},
-  "user2Photo": {"value": "1010", "lightIntensity": 50, "cameraAngle": 60},
-  "user3Photo": {"value": "", "lightIntensity": 10, "cameraAngle": 85}
+  "user1Photo":{"value": "010001","lightIntensity": 60, "cameraAngle": 40 },
+  "user2Photo": {"value": "110011111", "lightIntensity": 70, "cameraAngle": 5},
+  "user3Photo": {"value": "1100", "lightIntensity": 70, "cameraAngle": 5}
 }
