@@ -16,6 +16,7 @@ public class AdminControlSystem {
 	String keySerializer = StringSerializer.class.getName();
 	String valueSerializer = StringSerializer.class.getName();
 	NotificationService notificationService = new NotificationService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+	LoggingSystem logger = new LoggingSystem();
 	private ArrayList<Boolean> configState = new ArrayList<>() {{
 		add(true);
 		add(true); 
@@ -40,7 +41,7 @@ public class AdminControlSystem {
 
 	AdminControlSystemOutput acsOutput;
 
-	private Notification notification;
+	private Notification notification = new Notification();
 
 	private void setUserId(UUID user_id) {
 		this.user_id = user_id;
@@ -77,26 +78,50 @@ public class AdminControlSystem {
 		if(this.user_id != null && this.option != null) {
 			if (option.equals("update")) {
 				this.user.updateUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+				System.out.println("user Updated successfully");
+				logger.log_data("info", "user Updated successfully"+user_id);
 
 				//notification user updated
 				notification.message="user :"+ user_id + " user Updated successfully";
 				notification.type = "alert";
+				notification.topic = "notification";
 				notificationService.notify(notification);
 
 				return true;
 			}
-			else if(option.equals("add")) {
-				this.user.addUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
+			else if(option.equals("add") && !this.isFaceRecognition && !this.isFingerPrint && !this.isRFID) {
+				try {
+					this.user.addUser(fingerPrintFeatureSet, faceRecognitionFeatureSet, rfidScan);
 
-				// otification user Added
-				notification.message="user :"+ user_id + " user Added successfully";
+					// Notification user Added
+					notification.message = "user :" + user_id + " user Added successfully";
+					notification.type = "alert";
+					notification.topic = "notification";
+					notificationService.notify(notification);
+
+					System.out.println("user Added successfully");
+					logger.log_data("info","user Added successfully"+user_id);
+
+					return true;
+				}
+				catch(Exception ex){
+					System.out.println("failure : User was not Added");
+					logger.log_error_data( "error","User was not Added");
+
+				}
+			}
+			else if(option.equals("add") ) {
+				// Notification user Added
+				notification.message = "user :" + user_id + " user already exists";
 				notification.type = "alert";
-				notification.topic ="notification";
+				notification.topic = "notification";
 				notificationService.notify(notification);
+				System.out.println("failure : User Already Exists");
+				logger.log_error_data( "error","failure : User Already Exists");
 
-				return true;
 			}
-			else {
+			else if(option.equals("delete")){
+				System.out.println("user Deleted successfully");
 				// notification delete
 				notification.message="user :"+ user_id + " user Deleted successfully";
 				notification.type = "alert";
@@ -104,6 +129,12 @@ public class AdminControlSystem {
 				notificationService.notify(notification);
 
 				user.deleteUser(user_id);
+
+				logger.log_data("info",user_id+"user Deleted successfully");
+
+			}
+			else{
+				System.out.println("invalid input");
 			}
 		}
 		else {
@@ -114,6 +145,8 @@ public class AdminControlSystem {
 			notificationService.notify(notification);
 
 			System.out.println("User_id missing, hence data updation does not take place");
+			logger.log_error_data( "error","user Id missing: updation failerd");
+
 		}
 		return false;
 	}

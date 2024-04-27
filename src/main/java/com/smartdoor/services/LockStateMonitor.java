@@ -21,7 +21,8 @@ public class LockStateMonitor {
     String keySerializer = StringSerializer.class.getName();
     String valueSerializer = StringSerializer.class.getName();
     String notificationTopic = "notification";
-    NotificationService notificationService = new NotificationService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());    private String latestLockedState = null;
+    NotificationService notificationService = new NotificationService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
+    private String latestLockedState = null;
     private String latestDeadboltState = null;
 
     public static void main(String[] args) throws InterruptedException {

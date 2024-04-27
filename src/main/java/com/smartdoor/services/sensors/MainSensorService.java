@@ -11,9 +11,9 @@ public class MainSensorService implements Runnable{
     private final String sensorInput;
     private final CountDownLatch latch;
 
-    private static FeatureSet fpOutput;
-    private static FeatureSet rfidOutput;
-    private static FeatureSet camOutput;
+    private static FeatureSet fpOutput = new FeatureSet();
+    private static FeatureSet rfidOutput = new FeatureSet();
+    private static FeatureSet camOutput = new FeatureSet();
 
 
     public MainSensorService(String sensorName, String sensorInput, CountDownLatch latch) {

@@ -8,8 +8,7 @@ public class FeatureSet {
         throw new UnsupportedOperationException("Unimplemented method 'set'");
     }
 
-    public void getValue() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getValue'");
+    public String getValue() {
+        return "";
     }
 }

@@ -3,6 +3,7 @@ package com.smartdoor.project.sensors;
 import com.smartdoor.models.*;
 import com.smartdoor.services.sensors.FaceRecogScanner;
 
+import org.json.simple.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -95,19 +96,22 @@ public class FaceRecogScannerTest {
     // testing the feedback for light intensity adjustment
     @Test
     void getFeedback_LightIntensityLessThanThreshold_IncrementLightIntensity() {
-        this is to test the feedback case .
+        //this is to test the feedback case .
         // Arrange
         CameraParam updatedCameraParam = new CameraParam();
-        updatedCameraParam.lightIntensity = 70;
+        updatedCameraParam.lightIntensity = 10;
         Photo photo = new Photo();
         photo.distance = 40;
         Feedback feedback = new Feedback();
 
+        boolean validPhoto = false;
         // Act
-        boolean validPhoto = faceRecogScanner.getFeedback(updatedCameraParam, photo, feedback, false);
+        while(!validPhoto) {
+            validPhoto = faceRecogScanner.getFeedback(updatedCameraParam, photo, feedback, validPhoto);
+        }
 
         // Assert
-        assertFalse(validPhoto);
+        assertTrue(validPhoto);
         assertEquals(80, updatedCameraParam.lightIntensity);
     }
 
@@ -115,17 +119,21 @@ public class FaceRecogScannerTest {
     void getFeedback_CameraAngleLessThanThreshold_IncrementCameraAngle() {
         // Arrange
         CameraParam updatedCameraParam = new CameraParam();
-        updatedCameraParam.cameraAngle = 40;
+        updatedCameraParam.cameraAngle = 5;
         Photo photo = new Photo();
         photo.distance = 40;
         Feedback feedback = new Feedback();
 
         // Act
-        boolean validPhoto = faceRecogScanner.getFeedback(updatedCameraParam, photo, feedback, false);
+        boolean validPhoto = false;
+        // Act
+        while(!validPhoto) {
+            validPhoto = faceRecogScanner.getFeedback(updatedCameraParam, photo, feedback, validPhoto);
+        }
 
         // Assert
-        assertFalse(validPhoto);
-        assertEquals(50, updatedCameraParam.cameraAngle);
+        assertTrue(validPhoto);
+        assertEquals(45, updatedCameraParam.cameraAngle);
     }
 
     @Test

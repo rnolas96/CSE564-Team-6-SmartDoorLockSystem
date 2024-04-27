@@ -14,9 +14,9 @@ import javax.naming.ldap.UnsolicitedNotification;
 public class InputService  {
     private final CountDownLatch latch = new CountDownLatch(3);
 
-    private FeatureSet fingerPrintFeatureSet = new FeatureSet();
-    private FeatureSet faceRecognitionFeatureSet = new FeatureSet();
-    private FeatureSet rfidFeatureSet = new FeatureSet();
+    private FeatureSet fingerPrintFeatureSet ;
+    private FeatureSet faceRecognitionFeatureSet;
+    private FeatureSet rfidFeatureSet;
 
     private void callCentralManagementSystem(FeatureSet fingerPrintFeatureSet, FeatureSet faceRecognitionFeatureset, FeatureSet rfidScan) {
 
@@ -76,6 +76,8 @@ public class InputService  {
             this.fingerPrintFeatureSet = MainSensorService.getFingerPrintOutput();
             this.faceRecognitionFeatureSet = MainSensorService.getCamOutput();
             this.rfidFeatureSet = MainSensorService.getRFIDOutput();
+
+            System.out.println("face rcog featureset ==================="+ this.faceRecognitionFeatureSet.value);
 
             // Call middleware service after all sensor threads have finished
             this.callCentralManagementSystem(this.fingerPrintFeatureSet, this.faceRecognitionFeatureSet, this.rfidFeatureSet);

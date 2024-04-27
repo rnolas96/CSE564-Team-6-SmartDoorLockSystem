@@ -39,11 +39,6 @@ public class FingerprintScanner {
 
 	KafkaProducerService kafkaProducer = new KafkaProducerService("localhost:9092",StringSerializer.class.getName(),StringSerializer.class.getName());
 
-
-	private boolean checkCaptured(boolean captured) {
-        return captured;
-	}
-
 	public FeatureSet getFeatureSet(Fingerprint scan) throws Exception {
 
 
@@ -94,7 +89,9 @@ public class FingerprintScanner {
 				value = "error occured while getting fingerprint featureset";
 				kafkaProducer.sendMessage(topic,errorKey,value);
 
-				throw new Exception("error occurred while getting fingerprint featureset" +  ex.getMessage());
+				System.out.println("error occurred while getting fingerprint featureset" +  ex.getMessage());
+				return new FeatureSet();
+
 
 			}
 		}

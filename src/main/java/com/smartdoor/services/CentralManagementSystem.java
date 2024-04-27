@@ -100,18 +100,22 @@ public class CentralManagementSystem extends Thread {
 						this.userId = UUID.randomUUID();
 					}
 				}
-				System.out.println("Enter config(Type No to skip)");
-                String configInput = scanner.nextLine();
+				else{
+					System.out.println("Enter config(Type No to skip)");
+					String configInput = scanner.nextLine();
 
-				if(!configInput.equals("No")) {
+					if(!configInput.equals("No")) {
 
-					String cleanInput = configInput.replaceAll("[{}\\s]", "");
-					String[] booleanStrings = cleanInput.split(",");
-					this.config = new ArrayList<>();
-					for (String boolStr : booleanStrings) {
-						this.config.add(Boolean.parseBoolean(boolStr.trim()));
+						String cleanInput = configInput.replaceAll("[{}\\s]", "");
+						String[] booleanStrings = cleanInput.split(",");
+						this.config = new ArrayList<>();
+						for (String boolStr : booleanStrings) {
+							this.config.add(Boolean.parseBoolean(boolStr.trim()));
+						}
 					}
-				}	
+
+				}
+
 
                 lock.lock();
 				this.centralProcessing();
